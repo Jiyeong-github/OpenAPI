@@ -25,10 +25,16 @@ public class TodayService {
     private TodayMapper mapper;
 
     public List<LocationCodeEntity> selLocationCode() {
-        return mapper.selLocationCode();
+        return mapper.selLocationCode(null);
     }
 
     public void saveData(SearchDTO param) {
+        List<ApartmentInfoEntity> dbList = mapper.selApartmentInfoList(param);
+
+        if (dbList.size()>0) {
+            return;
+        }
+
         final String url = "http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev";
         // final String serviceKey = "Y2UOCkD8Ilv2gViPGV33ddNTTQfRi92i8mRzUeQX%2BNgSiNTO3gp9hJZX4J6u8uXucMM6RdRBoGxMn6XHfsEzNA%3D%3D";
         final String decodeServicekey = "Y2UOCkD8Ilv2gViPGV33ddNTTQfRi92i8mRzUeQX+NgSiNTO3gp9hJZX4J6u8uXucMM6RdRBoGxMn6XHfsEzNA==";
@@ -69,12 +75,17 @@ public class TodayService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for (ApartmentInfoEntity item : list) {
+
+        List<LocationCodeEntity> locationList = mapper.selLocationCode(param);
+        LocationCodeEntity code = locationList.get(0);
+
+        /*  for (ApartmentInfoEntity item : list) {
             System.out.println(item);
         }
+        */
 
         InsertEntity param2 = new InsertEntity();
-        param2.setLocd(1);
+        param2.setLocd(code.getLoc());
         param2.setArr(list);
 
         mapper.insApartmentInfoArr(param2);

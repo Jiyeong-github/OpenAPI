@@ -8,5 +8,5 @@ import lombok.Setter;
 public class LocationCodeEntity {
     private int incd;
     private String excd;
-    private String loc;
+    private int loc;
 }

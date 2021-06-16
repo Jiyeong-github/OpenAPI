@@ -5,6 +5,11 @@
     <select id="selLocationCode" resultType="LocationCodeEntity">
         select incd, excd, loc
         from location_code
+        <where>
+            <if test=" excd!=null and excd!='' ">
+                where excd=#{excd}
+            </if>
+        </where>
     </select>
 
     <insert id="insApartmentInfoArr">
@@ -12,12 +17,22 @@
         (deal_amt, build_yr, deal_yr, deal_mth, deal_day, dong, apt_nm, afeu, str, flr, locd)
         VALUES
         <foreach collection="arr" item="item" open="(" close=")"
-        separator="), (">
-        <!--collection 반복 처리-->
+                 separator="), (">
+            <!--collection 반복 처리-->
             #{item.deal_amt}, #{item.build_yr}, #{item.deal_yr}, #{item.deal_mth},
             #{item.deal_day}, #{item.dong}, #{item.apt_nm}, #{item.afeu},
             #{item.str}, #{item.flr}, #{locd}
-        <!--locd는 InsertEntity에서 받아오고 있으니 item 적어 줄 필요 X-->
+            <!--locd는 InsertEntity에서 받아오고 있으니 item 적어 줄 필요 X-->
         </foreach>
     </insert>
+
+    <select id="selApartmentInfoList" resultType="ApartmentInfoEntity">
+        SELECT A.*
+        FROM apartment_info A
+                 INNER JOIN location_code B
+                            ON A.locd = B.loc
+        WHERE A.deal_yr = #{deal_yr}
+          AND A.deal_mth = #{deal_mth}
+          AND B.excd = #{excd};
+    </select>
 </mapper>
