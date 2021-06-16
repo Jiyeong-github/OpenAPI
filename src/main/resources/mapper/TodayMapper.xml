@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kedu.user.TodayMapper">
+
+    <select id="selLocationCode" resultType="LocationCodeEntity">
+        select incd, excd, loc
+        from location_code
+    </select>
+
+    <insert id="insApartmentInfoArr">
+        INSERT INTO apartment_info
+        (deal_amt, build_yr, deal_yr, deal_mth, deal_day, dong, apt_nm, afeu, str, flr, locd)
+        VALUES
+        <foreach collection="arr" item="item" open="(" close=")"
+        separator="), (">
+        <!--collection 반복 처리-->
+            #{item.deal_amt}, #{item.build_yr}, #{item.deal_yr}, #{item.deal_mth},
+            #{item.deal_day}, #{item.dong}, #{item.apt_nm}, #{item.afeu},
+            #{item.str}, #{item.flr}, #{locd}
+        <!--locd는 InsertEntity에서 받아오고 있으니 item 적어 줄 필요 X-->
+        </foreach>
+    </insert>
+</mapper>
